@@ -1,0 +1,26 @@
+{
+  "name": "Webhook",
+  "version": "0.0.1",
+  "description": "Webhook для github-а",
+  "main": "webhook.coffee",
+  "dependencies": {
+    "underscore": "~1.6.0",
+    "coffee-script": "~1.7.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.inn.ru:vitaliy-yurchenko/webhook.git"
+  },
+  "keywords": [
+    "webhook",
+    "git"
+  ],
+  "author": "Vitaliy Yurchenko",
+  "engines": {
+    "node": "0.10.x"
+  }
+}
