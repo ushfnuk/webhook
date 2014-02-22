@@ -58,12 +58,17 @@ server.on 'request', (req, res)->
             branch   = refParts[refParts.length - 1]
 
             request = https.request options, (response)->
+                console.log "response = #{response}"
                 res.end()
 
-            request.end JSON.stringify
+            post = JSON.stringify
                 title: "Pull request для #{branch}"
                 base: 'master'
                 head: "#{user}:#{branch}"
+
+            console.log "post = #{post}"
+
+            request.end post
 
     else
         res.writeHead 404, 'Content-Type': 'text/html'
