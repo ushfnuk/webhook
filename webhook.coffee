@@ -8,7 +8,7 @@ ACCESS_TOKEN = 'token'  # свой access_token
 USER         = 'ushfnuk'
 REPO         = 'webhook'
 HOSTNAME     = 'api.github.com'
-PREFIX       = ''
+PREFIX       = '/repos'
 INFIX        = "#{USER}/#{REPO}"
 
 
@@ -30,32 +30,40 @@ server.on 'connection', (socket)->
 server.on 'request', (req, res)->
     uri      = url.parse req.url
     pathname = uri.pathname
-    regExp   = new RegExp "^#{PREFIX}\/repos\/#{INFIX}"
-
-    delete req.headers.host
 
     headers = setHeaders {}
-
-    options =
-        hostname: HOSTNAME
-        method: 'GET'
-        path: pathname
-        port: 443
-        headers: headers
 
     if pathname is '/favicon.ico'
         res.end()
         return
 
     if pathname is '/payload'
+        options =
+            hostname: HOSTNAME
+            method: 'POST'
+            path: "#{PREFIX}/#{INFIX}/pulls"
+            port: 443
+            headers: headers
+
         data = ''
         req.on 'data', (chunk)->
             data += chunk
 
         req.on 'end', ->
-            console.log "data = #{data.toString()}"
-            console.log "pathname = #{pathname}"
-            res.end()
+            data = data.toString()
+            json = JSON.parse data
+
+            refParts = json.ref.split('/')
+            user     = json.pusher.name
+            branch   = refParts[refParts.length - 1]
+
+            request = https.request options, (response)->
+                res.end()
+
+            request.end JSON.stringify
+                title: "Pull request для #{branch}"
+                base: 'master'
+                head: "#{user}:#{branch}"
 
     else
         res.writeHead 404, 'Content-Type': 'text/html'
