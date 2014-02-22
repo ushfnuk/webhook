@@ -58,8 +58,13 @@ server.on 'request', (req, res)->
             branch   = refParts[refParts.length - 1]
 
             request = https.request options, (response)->
-                console.log "response = #{response}"
-                res.end()
+                data = ''
+                response.on 'data', (chunk)->
+                    data += chunk
+
+                response.on 'end', ->
+                    console.log "response = #{data.toString()}"
+                    res.end()
 
             post = JSON.stringify
                 title: "Pull request для #{branch}"
