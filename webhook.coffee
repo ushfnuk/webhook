@@ -15,6 +15,7 @@ INFIX        = "#{USER}/#{REPO}"
 defaultHeaders =
     Authorization: "token #{ACCESS_TOKEN}"
     Accept: 'application/vnd.github.v3+json'
+    'User-Agent': 'Webhook'
 
 setHeaders = (headers)->
     return _.extend defaultHeaders, headers
