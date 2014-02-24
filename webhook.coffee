@@ -1,25 +1,22 @@
-http  = require 'http'
-https = require 'https'
-url   = require 'url'
-_     = require 'underscore'
+http   = require 'http'
+https  = require 'https'
+url    = require 'url'
+path   = require 'path'
+_      = require 'underscore'
+config = require('./config')
 
 
-ACCESS_TOKEN = 'token'  # свой access_token
-USER         = 'ushfnuk'
-REPO         = 'webhook'
-HOSTNAME     = 'api.github.com'
-PREFIX       = '/repos'
-INFIX        = "#{USER}/#{REPO}"
+PREFIX = path.join (config.prefix || ''), '/repos'
+INFIX  = path.join config.user, config.repo
 
 
 defaultHeaders =
-    Authorization: "token #{ACCESS_TOKEN}"
+    Authorization: "token #{config.access_token}"
     Accept: 'application/vnd.github.v3+json'
     'User-Agent': 'Webhook'
 
 setHeaders = (headers)->
     return _.extend defaultHeaders, headers
-
 
 
 server = http.createServer()
@@ -40,9 +37,9 @@ server.on 'request', (req, res)->
 
     if pathname is '/payload'
         options =
-            hostname: HOSTNAME
+            hostname: config.hostname
             method: 'POST'
-            path: "#{PREFIX}/#{INFIX}/pulls"
+            path: path.join PREFIX, INFIX, "pulls"
             port: 443
             headers: headers
 
